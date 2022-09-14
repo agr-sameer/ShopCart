@@ -1,0 +1,69 @@
+﻿
+@{
+    ViewBag.Title = "checkout";
+    int TotalAmount = 0;
+}
+
+<h2>checkout</h2>
+
+@if (TempData["ShopCart"] != null)
+{
+
+
+    <table class="table table-responsive">
+
+        <thead>
+            <tr>
+                <th>PRODUCT</th>
+                <th>NAME</th>
+                <th>PRICE</th>
+                <th>QUANTITY</th>
+                <th>BILL</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in TempData["ShopCart"] as List<Cart.Models.ShopCart>)
+            {
+                TotalAmount += item.CartTotal;
+
+                <tr>
+                    <td><img src="@Url.Content(item.ProductImage)" alt="Not FOund" width="80" height="80" /></td>
+                    <td>@item.ProductName</td>
+                    <td>@item.ProductCost</td>
+                    <td>
+                        @using (Html.BeginForm())
+                        {
+                            <button formmethod="post" formaction="@Url.Action("AddItem", "Home", item.ProductId)" name="ItemId" value="@item.ProductId" type="submit" class="btn btn-default">+</button>
+                            @item.ProductQty
+                            <button formmethod="post" formaction="@Url.Action("RemoveItem", "Home", item.ProductId)" name="ItemId" value="@item.ProductId" type="submit" class="btn btn-default">-</button>
+                        }
+                    </td>
+                    <td>@item.CartTotal</td>
+
+                </tr>
+
+            }
+
+        </tbody>
+
+        <tfoot>
+            <tr>
+                <td colspan="4"></td>
+                <td>@TotalAmount</td>
+
+            </tr>
+        </tfoot>
+
+    </table>
+
+    @Html.ActionLink("See more products", "Index", "Home")
+
+
+
+}
+else
+{
+    <h2 style="color:red"> Cart is empty....</h2>
+    @Html.ActionLink("See more products", "Index", "Home")
+}
+
